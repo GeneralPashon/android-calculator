@@ -12,8 +12,6 @@ public class ReversePolishNotation {
     private static final Stack<Token> numbers = new Stack<>();
 
     public static String calculate(List<Token> tokens) {
-        System.out.println("CALCULATE " + tokens.size() + " TOKENS");
-
         for(Token token : tokens)
             processToken(token);
 
@@ -24,8 +22,6 @@ public class ReversePolishNotation {
     }
 
     private static void processToken(Token token) {
-        System.out.println("  PROCESS TOKEN " + token.text);
-
         if(token.isBeginBracket()) {
             operators.push(token);
 
@@ -56,9 +52,27 @@ public class ReversePolishNotation {
         }
     }
 
+    private static void calculateStack() {
+        debugStep();
+
+        final Operator operator = Operator.fromToken(operators.pop());
+
+        final Token bToken = numbers.pop();
+        final Token aToken = numbers.pop();
+
+        final double a = Double.parseDouble(aToken.text);
+        final double b = Double.parseDouble(bToken.text);
+        final double result = operator.operateOn(a, b);
+
+        final Token resultToken = new Token(TokenType.NUMBER, String.valueOf(result));
+
+        numbers.push(resultToken);
+    }
+
+
     private static int step = 1;
 
-    private static void printStep(){
+    private static void debugStep(){
         System.out.println("Step " + step + ":");
         step++;
 
@@ -73,23 +87,6 @@ public class ReversePolishNotation {
         for(Token token: numbers)
             System.out.print(token.text + " ");
         System.out.println();
-    }
-
-    private static void calculateStack() {
-        printStep();
-
-        final Operator operator = Operator.fromToken(operators.pop());
-
-        final Token bToken = numbers.pop();
-        final Token aToken = numbers.pop();
-
-        final double a = Double.parseDouble(aToken.text);
-        final double b = Double.parseDouble(bToken.text);
-        final double result = operator.operateOn(a, b);
-
-        final Token resultToken = new Token(TokenType.NUMBER, String.valueOf(result));
-
-        numbers.push(resultToken);
     }
 
 }
